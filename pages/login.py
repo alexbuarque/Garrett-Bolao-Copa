@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.auth import is_logged_in, login, register, logout
+from utils.auth import is_logged_in, login, register, logout, reset_password
 
 st.title("🔐 Bolão da Copa 2026")
 
@@ -10,8 +10,9 @@ if is_logged_in():
         st.rerun()
     st.stop()
 
-tab_login, tab_register = st.tabs(["Entrar", "Criar conta"])
+tab_login, tab_register, tab_reset = st.tabs(["Entrar", "Criar conta", "Esqueci a senha"])
 
+# ── Login ─────────────────────────────────────────────────────────────────────
 with tab_login:
     with st.form("form_login"):
         email = st.text_input("Email")
@@ -28,6 +29,7 @@ with tab_login:
             else:
                 st.error(err or "Erro ao fazer login.")
 
+# ── Criar conta ───────────────────────────────────────────────────────────────
 with tab_register:
     with st.form("form_register"):
         r_email = st.text_input("Email", key="r_email")
@@ -49,3 +51,26 @@ with tab_register:
                 st.rerun()
             else:
                 st.error(err or "Erro ao criar conta.")
+
+# ── Esqueci a senha ───────────────────────────────────────────────────────────
+with tab_reset:
+    st.markdown(
+        "Informe o email cadastrado e enviaremos um link para você criar uma nova senha."
+    )
+    with st.form("form_reset"):
+        reset_email = st.text_input("Email cadastrado", key="reset_email")
+        submitted_reset = st.form_submit_button(
+            "Enviar link de redefinição", use_container_width=True
+        )
+    if submitted_reset:
+        if not reset_email:
+            st.error("Informe seu email.")
+        else:
+            ok, err = reset_password(reset_email)
+            if ok:
+                st.success(
+                    "Link enviado! Verifique sua caixa de entrada (e a pasta de spam) "
+                    "e siga as instruções para criar uma nova senha."
+                )
+            else:
+                st.error(err or "Erro ao enviar o email de redefinição.")

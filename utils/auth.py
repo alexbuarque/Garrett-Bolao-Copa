@@ -73,6 +73,15 @@ def register(email: str, password: str, nickname: str) -> tuple[bool, str | None
         return False, msg
 
 
+def reset_password(email: str) -> tuple[bool, str | None]:
+    client = get_supabase()
+    try:
+        client.auth.reset_password_email(email)
+        return True, None
+    except Exception as exc:
+        return False, str(exc)
+
+
 def logout() -> None:
     for key in ("user_id", "email", "nickname", "access_token", "refresh_token"):
         st.session_state.pop(key, None)

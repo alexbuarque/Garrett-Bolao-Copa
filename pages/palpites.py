@@ -82,6 +82,13 @@ for tab, group in zip(tabs, GROUPS):
                     else:
                         default_a = existing["pred_a"] if existing else 0
                         default_b = existing["pred_b"] if existing else 0
+                        if existing:
+                            st.caption(
+                                f"✅ Palpite salvo: {existing['pred_a']} × {existing['pred_b']}"
+                                " — altere abaixo e salve novamente se quiser"
+                            )
+                        else:
+                            st.caption("Sem palpite ainda — preencha e salve")
                         c1, c2, c3 = st.columns([2, 1, 2])
                         with c1:
                             ga = st.number_input(
