@@ -4,6 +4,8 @@ import streamlit as st
 from utils.auth import is_logged_in
 from utils.data import get_ranking
 
+st.image("assets/banner.png", use_container_width=True)
+
 st.title("🏆 Ranking do Bolão")
 
 ranking = get_ranking()
