@@ -44,4 +44,4 @@ st.dataframe(
     hide_index=True,
 )
 
-st.caption("Pontuação: Placar exato = 5 pts | Vencedor/empate = 3 pts | Gol por time = +1 pt | Especiais = 10 pts cada")
+st.caption("Pontuação: Placar exato = 5 pts | Vencedor/empate = 3 pts | Especiais = 10 pts cada")
