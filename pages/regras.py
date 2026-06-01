@@ -55,17 +55,17 @@ st.markdown(
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td style="padding:12px 16px;border:1px solid #ccc">Placar Exato</td>
-                <td style="padding:12px 16px;text-align:center;border:1px solid #ccc"><b>5</b></td>
+            <tr style="background-color:#1e1e1e;color:#ffffff">
+                <td style="padding:12px 16px;border:1px solid #555">Placar Exato</td>
+                <td style="padding:12px 16px;text-align:center;border:1px solid #555"><b>5</b></td>
             </tr>
-            <tr style="background-color:#f5f5f5">
-                <td style="padding:12px 16px;border:1px solid #ccc">Resultado Correto</td>
-                <td style="padding:12px 16px;text-align:center;border:1px solid #ccc"><b>3</b></td>
+            <tr style="background-color:#2a2a2a;color:#ffffff">
+                <td style="padding:12px 16px;border:1px solid #555">Resultado Correto</td>
+                <td style="padding:12px 16px;text-align:center;border:1px solid #555"><b>3</b></td>
             </tr>
-            <tr>
-                <td style="padding:12px 16px;border:1px solid #ccc">Erro</td>
-                <td style="padding:12px 16px;text-align:center;border:1px solid #ccc"><b>0</b></td>
+            <tr style="background-color:#1e1e1e;color:#ffffff">
+                <td style="padding:12px 16px;border:1px solid #555">Erro</td>
+                <td style="padding:12px 16px;text-align:center;border:1px solid #555"><b>0</b></td>
             </tr>
         </tbody>
     </table>
