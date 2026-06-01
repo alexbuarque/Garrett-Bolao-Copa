@@ -23,9 +23,7 @@ for pos, entry in enumerate(ranking, start=1):
             "Participante": entry["nickname"],
             "Departamento": entry["department"],
             "Turno": entry["shift"],
-            "Pts Jogos": entry["match_points"],
-            "Pts Especiais": entry["special_points"],
-            "Total": entry["total_points"],
+            "Pontos": entry["total_points"],
         }
     )
 
@@ -44,4 +42,4 @@ st.dataframe(
     hide_index=True,
 )
 
-st.caption("Pontuação: Placar exato = 5 pts | Vencedor/empate = 3 pts | Especiais = 10 pts cada")
+st.caption("Pontuação: Placar exato = 5 pts | Vencedor/empate = 3 pts")

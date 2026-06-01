@@ -8,8 +8,6 @@ import streamlit as st
 from utils.data import (
     get_all_matches,
     get_predictions_for_match,
-    get_special_results,
-    save_special_results,
     update_match_result,
     seed_matches_if_empty,
     reseed_matches,
@@ -42,8 +40,8 @@ st.success("✅ Acesso administrativo ativo.")
 # Fetch matches once, share across tabs
 all_matches = get_all_matches()
 
-tab_seed, tab_results, tab_especiais, tab_view = st.tabs(
-    ["⚙️ Inicializar", "📋 Resultados", "🌟 Especiais", "👁️ Ver Palpites"]
+tab_seed, tab_results, tab_view = st.tabs(
+    ["⚙️ Inicializar", "📋 Resultados", "👁️ Ver Palpites"]
 )
 
 # ── Seed ──────────────────────────────────────────────────────────────────────
@@ -122,23 +120,6 @@ with tab_results:
                         st.rerun()
                     else:
                         st.error("Erro ao salvar resultado.")
-
-# ── Special Results ───────────────────────────────────────────────────────────
-with tab_especiais:
-    st.subheader("Revelar prêmios especiais")
-    current = get_special_results()
-    with st.form("form_special_results"):
-        art = st.text_input("⚽ Artilheiro", value=current.get("artilheiro") or "")
-        mvp_val = st.text_input("🏅 MVP", value=current.get("mvp") or "")
-        gol = st.text_input("🧤 Melhor Goleiro", value=current.get("goleiro") or "")
-        save_sp = st.form_submit_button(
-            "💾 Salvar e recalcular pontos especiais", use_container_width=True
-        )
-    if save_sp:
-        if save_special_results(art, mvp_val, gol):
-            st.success("Resultados especiais salvos e pontos recalculados!")
-        else:
-            st.error("Erro ao salvar.")
 
 # ── View Predictions ──────────────────────────────────────────────────────────
 with tab_view:

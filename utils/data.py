@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import streamlit as st
 
 from .supabase_client import get_admin_supabase
-from .scoring import calculate_match_points, calculate_special_points
+from .scoring import calculate_match_points
 
 
 # ── Matches ──────────────────────────────────────────────────────────────────
@@ -66,86 +66,27 @@ def save_prediction(user_id: str, match_id: int, pred_a: int, pred_b: int) -> bo
         return False
 
 
-# ── Special predictions ───────────────────────────────────────────────────────
-
-def get_special_prediction(user_id: str) -> dict | None:
-    client = get_admin_supabase()
-    try:
-        result = (
-            client.table("special_predictions")
-            .select("*")
-            .eq("user_id", user_id)
-            .limit(1)
-            .execute()
-        )
-        return result.data[0] if result.data else None
-    except Exception:
-        return None
-
-
-def save_special_prediction(user_id: str, artilheiro: str, mvp: str, goleiro: str) -> bool:
-    client = get_admin_supabase()
-    now = datetime.now(timezone.utc).isoformat()
-    try:
-        client.table("special_predictions").upsert(
-            {
-                "user_id": user_id,
-                "artilheiro": artilheiro.strip(),
-                "mvp": mvp.strip(),
-                "goleiro": goleiro.strip(),
-                "updated_at": now,
-            },
-            on_conflict="user_id",
-        ).execute()
-        return True
-    except Exception:
-        return False
-
-
-def get_special_results() -> dict:
-    client = get_admin_supabase()
-    try:
-        result = (
-            client.table("special_results")
-            .select("*")
-            .eq("id", 1)
-            .limit(1)
-            .execute()
-        )
-        return result.data[0] if result.data else {}
-    except Exception:
-        return {}
-
-
 # ── Ranking ───────────────────────────────────────────────────────────────────
 
 def get_ranking() -> list[dict]:
     client = get_admin_supabase()
     profiles = client.table("profiles").select("id, nickname, department, shift").execute().data or []
     preds = client.table("predictions").select("user_id, points").execute().data or []
-    specials = (
-        client.table("special_predictions").select("user_id, points").execute().data or []
-    )
 
     match_pts: dict[str, int] = {}
     for p in preds:
         match_pts[p["user_id"]] = match_pts.get(p["user_id"], 0) + (p["points"] or 0)
 
-    special_pts: dict[str, int] = {s["user_id"]: (s["points"] or 0) for s in specials}
-
     ranking = []
     for prof in profiles:
         uid = prof["id"]
-        mp = match_pts.get(uid, 0)
-        sp = special_pts.get(uid, 0)
+        pts = match_pts.get(uid, 0)
         ranking.append(
             {
                 "nickname": prof["nickname"],
                 "department": prof.get("department") or "—",
                 "shift": prof.get("shift") or "—",
-                "match_points": mp,
-                "special_points": sp,
-                "total_points": mp + sp,
+                "total_points": pts,
             }
         )
 
@@ -179,37 +120,6 @@ def _recalculate_match_points(match_id: int, result_a: int, result_b: int) -> No
     for pred in preds:
         pts = calculate_match_points(pred["pred_a"], pred["pred_b"], result_a, result_b)
         client.table("predictions").update({"points": pts}).eq("id", pred["id"]).execute()
-
-
-def recalculate_special_points() -> None:
-    """Recalculate special points for all users based on current special_results."""
-    client = get_admin_supabase()
-    result_row = get_special_results()
-    if not result_row:
-        return
-    specials = client.table("special_predictions").select("id, artilheiro, mvp, goleiro").execute().data or []
-    for sp in specials:
-        pts = calculate_special_points(sp, result_row)
-        client.table("special_predictions").update({"points": pts}).eq("id", sp["id"]).execute()
-
-
-def save_special_results(artilheiro: str, mvp: str, goleiro: str) -> bool:
-    client = get_admin_supabase()
-    now = datetime.now(timezone.utc).isoformat()
-    try:
-        client.table("special_results").upsert(
-            {
-                "id": 1,
-                "artilheiro": artilheiro.strip(),
-                "mvp": mvp.strip(),
-                "goleiro": goleiro.strip(),
-                "updated_at": now,
-            }
-        ).execute()
-        recalculate_special_points()
-        return True
-    except Exception:
-        return False
 
 
 def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
@@ -293,7 +203,6 @@ def reseed_matches() -> bool:
     client = get_admin_supabase()
     try:
         client.table("predictions").delete().neq("id", 0).execute()
-        client.table("special_predictions").delete().neq("id", 0).execute()
         client.table("matches").delete().neq("id", 0).execute()
         fixtures = get_all_fixtures()
         rows = [
