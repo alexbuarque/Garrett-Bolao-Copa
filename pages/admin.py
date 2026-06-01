@@ -1,4 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+BRASILIA = timezone(timedelta(hours=-3))
 
 import pandas as pd
 import streamlit as st
@@ -68,7 +70,7 @@ with tab_results:
             status = "✅" if finished else "⏳"
             label = (
                 f"{status} {match['team_a']} × {match['team_b']} "
-                f"({datetime.fromisoformat(match['match_date']).strftime('%d/%m %H:%M')} UTC)"
+                f"({datetime.fromisoformat(match['match_date']).astimezone(BRASILIA).strftime('%d/%m %H:%M')} BRT)"
             )
             with st.expander(label, expanded=not finished):
                 with st.form(f"form_result_{match_id}"):

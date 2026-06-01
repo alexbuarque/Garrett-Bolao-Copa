@@ -1,4 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+BRASILIA = timezone(timedelta(hours=-3))
 
 import streamlit as st
 
@@ -54,7 +56,7 @@ for tab, group in zip(tabs, GROUPS):
                 col_info, col_preds = st.columns([2, 3])
                 with col_info:
                     st.markdown(f"**{match['team_a']}** vs **{match['team_b']}**")
-                    st.caption(match_dt.strftime("%d/%m/%Y %H:%M UTC"))
+                    st.caption(match_dt.astimezone(BRASILIA).strftime("%d/%m/%Y %H:%M (Brasília)"))
                     if has_result:
                         st.markdown(
                             f"✅ Resultado: **{match['result_a']} × {match['result_b']}**"
