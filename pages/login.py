@@ -24,7 +24,8 @@ with tab_login:
         else:
             ok, err = login(email, password)
             if ok:
-                st.switch_page("pages/palpites.py")
+                st.session_state["redirect_to_palpites"] = True
+                st.rerun()
             else:
                 st.error(err or "Erro ao fazer login.")
 
@@ -46,7 +47,8 @@ with tab_register:
         else:
             ok, err = register(r_email, r_pass, r_nick)
             if ok:
-                st.switch_page("pages/palpites.py")
+                st.session_state["redirect_to_palpites"] = True
+                st.rerun()
             else:
                 st.error(err or "Erro ao criar conta.")
 

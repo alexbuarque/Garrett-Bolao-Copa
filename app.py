@@ -26,4 +26,9 @@ else:
     pages = [login_page, ranking_page]
 
 pg = st.navigation(pages)
+
+# Redirect to palpites after login/register (flag set by login.py)
+if logged_in and st.session_state.pop("redirect_to_palpites", False):
+    st.switch_page(palpites_page)
+
 pg.run()
