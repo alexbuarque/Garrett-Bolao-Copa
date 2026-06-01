@@ -29,12 +29,13 @@ login_page = st.Page("pages/login.py", title="Login / Cadastro", icon="🔐")
 palpites_page = st.Page("pages/palpites.py", title="Palpites", icon="⚽")
 ranking_page = st.Page("pages/ranking.py", title="Ranking", icon="🏆")
 todos_page = st.Page("pages/palpites_todos.py", title="Palpites de Todos", icon="🔍")
+regras_page = st.Page("pages/regras.py", title="Regras e Prêmios", icon="📋")
 admin_page = st.Page("pages/admin.py", title="Painel Admin", icon="🔧")
 
 if logged_in:
-    pages = [palpites_page, ranking_page, todos_page, admin_page, login_page]
+    pages = [palpites_page, ranking_page, todos_page, regras_page, admin_page, login_page]
 else:
-    pages = [login_page, ranking_page, todos_page]
+    pages = [login_page, ranking_page, todos_page, regras_page]
 
 pg = st.navigation(pages)
 
