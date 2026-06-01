@@ -12,6 +12,7 @@ from utils.data import (
     save_special_results,
     update_match_result,
     seed_matches_if_empty,
+    reseed_matches,
 )
 
 st.title("🔧 Painel Administrativo")
@@ -53,6 +54,26 @@ with tab_seed:
     if st.button("Inicializar jogos no banco de dados", use_container_width=True):
         seed_matches_if_empty()
         st.success("Jogos verificados/inseridos com sucesso!")
+
+    st.divider()
+    st.subheader("⚠️ Recriar jogos oficiais")
+    st.warning(
+        "Esta ação **apaga todos os palpites e jogos existentes** e reinserirá "
+        "os 72 jogos oficiais da Copa 2026. Use somente se os jogos estiverem incorretos."
+    )
+    confirm_reseed = st.checkbox(
+        "Confirmo que entendo que todos os palpites serão perdidos"
+    )
+    if st.button(
+        "🔄 Recriar jogos oficiais",
+        use_container_width=True,
+        disabled=not confirm_reseed,
+    ):
+        if reseed_matches():
+            st.success("Jogos recriados com sucesso! Todos os palpites foram removidos.")
+            st.rerun()
+        else:
+            st.error("Erro ao recriar jogos.")
 
 # ── Match Results ─────────────────────────────────────────────────────────────
 with tab_results:

@@ -257,3 +257,29 @@ def seed_matches_if_empty() -> None:
         for f in fixtures
     ]
     client.table("matches").insert(rows).execute()
+
+
+def reseed_matches() -> bool:
+    """Delete all predictions and matches, then re-insert official fixtures."""
+    from data.matches import get_all_fixtures
+
+    client = get_admin_supabase()
+    try:
+        client.table("predictions").delete().neq("id", 0).execute()
+        client.table("special_predictions").delete().neq("id", 0).execute()
+        client.table("matches").delete().neq("id", 0).execute()
+        fixtures = get_all_fixtures()
+        rows = [
+            {
+                "group_name": f["group_name"],
+                "team_a": f["team_a"],
+                "team_b": f["team_b"],
+                "match_date": f["match_date"],
+                "stage": f["stage"],
+            }
+            for f in fixtures
+        ]
+        client.table("matches").insert(rows).execute()
+        return True
+    except Exception:
+        return False
