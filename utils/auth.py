@@ -90,6 +90,17 @@ def reset_password(email: str) -> tuple[bool, str | None]:
         return False, str(exc)
 
 
+def complete_password_reset(token_hash: str, new_password: str) -> tuple[bool, str | None]:
+    from supabase import create_client
+    try:
+        client = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
+        client.auth.verify_otp({"token_hash": token_hash, "type": "recovery"})
+        client.auth.update_user({"password": new_password})
+        return True, None
+    except Exception as exc:
+        return False, str(exc)
+
+
 def logout() -> None:
     for key in ("user_id", "email", "nickname", "access_token", "refresh_token"):
         st.session_state.pop(key, None)

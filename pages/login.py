@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.auth import is_logged_in, login, register, logout, reset_password
+from utils.auth import is_logged_in, login, register, logout, reset_password, complete_password_reset
 
 DEPARTMENTS = [
     "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro",
@@ -10,6 +10,33 @@ DEPARTMENTS = [
 
 SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
 
+# ── Recovery mode (user clicked reset-password link in email) ─────────────────
+params = st.query_params
+if params.get("type") == "recovery":
+    st.title("🔐 Redefinir Senha")
+    token_hash = params.get("token_hash", "")
+    if not token_hash:
+        st.error("Link inválido ou expirado. Solicite um novo link de redefinição.")
+        st.stop()
+    with st.form("form_new_password"):
+        new_pass = st.text_input("Nova senha (mínimo 6 caracteres)", type="password")
+        new_pass2 = st.text_input("Confirmar nova senha", type="password")
+        submitted_np = st.form_submit_button("Salvar nova senha", use_container_width=True)
+    if submitted_np:
+        if not new_pass or len(new_pass) < 6:
+            st.error("A senha precisa ter ao menos 6 caracteres.")
+        elif new_pass != new_pass2:
+            st.error("As senhas não coincidem.")
+        else:
+            ok, err = complete_password_reset(token_hash, new_pass)
+            if ok:
+                st.success("Senha redefinida com sucesso! Faça login com a nova senha.")
+                st.query_params.clear()
+            else:
+                st.error(err or "Erro ao redefinir senha. O link pode ter expirado.")
+    st.stop()
+
+# ── Normal login / register flow ──────────────────────────────────────────────
 st.title("🔐 Bolão da Copa 2026")
 
 if is_logged_in():
