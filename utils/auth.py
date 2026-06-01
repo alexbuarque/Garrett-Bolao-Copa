@@ -13,11 +13,11 @@ def _load_profile(user_id: str) -> None:
             client.table("profiles")
             .select("nickname")
             .eq("id", user_id)
-            .maybe_single()
+            .limit(1)
             .execute()
         )
         if result.data:
-            st.session_state["nickname"] = result.data["nickname"]
+            st.session_state["nickname"] = result.data[0]["nickname"]
     except Exception:
         pass
 
@@ -43,15 +43,18 @@ def register(email: str, password: str, nickname: str) -> tuple[bool, str | None
     if not nickname.strip():
         return False, "O apelido não pode estar vazio."
     admin = get_admin_supabase()
-    existing = (
-        admin.table("profiles")
-        .select("id")
-        .eq("nickname", nickname.strip())
-        .maybe_single()
-        .execute()
-    )
-    if existing.data:
-        return False, "Esse apelido já está em uso. Escolha outro."
+    try:
+        existing = (
+            admin.table("profiles")
+            .select("id")
+            .eq("nickname", nickname.strip())
+            .limit(1)
+            .execute()
+        )
+        if existing.data:
+            return False, "Esse apelido já está em uso. Escolha outro."
+    except Exception:
+        pass
     client = get_supabase()
     try:
         resp = client.auth.sign_up({"email": email, "password": password})

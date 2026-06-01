@@ -75,10 +75,10 @@ def get_special_prediction(user_id: str) -> dict | None:
             client.table("special_predictions")
             .select("*")
             .eq("user_id", user_id)
-            .maybe_single()
+            .limit(1)
             .execute()
         )
-        return result.data
+        return result.data[0] if result.data else None
     except Exception:
         return None
 
@@ -109,10 +109,10 @@ def get_special_results() -> dict:
             client.table("special_results")
             .select("*")
             .eq("id", 1)
-            .maybe_single()
+            .limit(1)
             .execute()
         )
-        return result.data or {}
+        return result.data[0] if result.data else {}
     except Exception:
         return {}
 
