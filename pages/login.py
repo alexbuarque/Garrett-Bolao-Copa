@@ -24,8 +24,7 @@ with tab_login:
         else:
             ok, err = login(email, password)
             if ok:
-                st.success("Login realizado!")
-                st.rerun()
+                st.switch_page("pages/palpites.py")
             else:
                 st.error(err or "Erro ao fazer login.")
 
@@ -47,8 +46,7 @@ with tab_register:
         else:
             ok, err = register(r_email, r_pass, r_nick)
             if ok:
-                st.success("Conta criada! Bem-vindo(a) ao bolão 🎉")
-                st.rerun()
+                st.switch_page("pages/palpites.py")
             else:
                 st.error(err or "Erro ao criar conta.")
 

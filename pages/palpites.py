@@ -121,5 +121,5 @@ for tab, group in zip(tabs, GROUPS):
                     if save_now < p["match_dt"]:
                         if save_prediction(user_id, p["match_id"], p["ga"], p["gb"]):
                             saved += 1
-                st.success(f"✅ {saved} palpite(s) salvo(s) no Grupo {group}!")
+                st.toast(f"Palpites salvos! ({saved} jogo(s) no Grupo {group})", icon="✅")
                 st.rerun()
