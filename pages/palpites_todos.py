@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.data import get_all_matches, get_all_predictions_with_profiles
-from utils.flags import with_flag
+from utils.flags import with_flag_html
 
 BRASILIA = timezone(timedelta(hours=-3))
 
@@ -29,18 +29,33 @@ for tab, group in zip(tabs, groups):
             finished = match.get("finished", False)
             dt = datetime.fromisoformat(match["match_date"]).astimezone(BRASILIA)
 
-            ta = with_flag(match["team_a"])
-            tb = with_flag(match["team_b"])
+            # Expander label (plain text — HTML not supported here)
             if finished:
                 label = (
-                    f"✅ {ta} {match['result_a']} × {match['result_b']} "
-                    f"{tb} — {dt.strftime('%d/%m %H:%M')} BRT"
+                    f"✅ {match['team_a']} {match['result_a']} × {match['result_b']} "
+                    f"{match['team_b']} — {dt.strftime('%d/%m %H:%M')} BRT"
                 )
             else:
-                label = f"⏳ {ta} × {tb} — {dt.strftime('%d/%m %H:%M')} BRT"
+                label = f"⏳ {match['team_a']} × {match['team_b']} — {dt.strftime('%d/%m %H:%M')} BRT"
 
             preds = all_preds.get(mid, [])
             with st.expander(label, expanded=False):
+                # Match header with flag images (HTML works inside expander body)
+                ta_html = with_flag_html(match["team_a"])
+                tb_html = with_flag_html(match["team_b"])
+                if finished:
+                    st.markdown(
+                        f"<b>{ta_html} {match['result_a']} × {match['result_b']} {tb_html}</b>"
+                        f" &nbsp;·&nbsp; {dt.strftime('%d/%m/%Y %H:%M')} (Brasília)",
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        f"<b>{ta_html}</b> vs <b>{tb_html}</b>"
+                        f" &nbsp;·&nbsp; {dt.strftime('%d/%m/%Y %H:%M')} (Brasília)",
+                        unsafe_allow_html=True,
+                    )
+
                 if not preds:
                     st.caption("Nenhum palpite registrado.")
                 else:

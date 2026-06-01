@@ -1,71 +1,75 @@
-FLAGS: dict[str, str] = {
+FLAG_CODES: dict[str, str] = {
     # Grupo A
-    "México":            "🇲🇽",
-    "África do Sul":     "🇿🇦",
-    "Coreia do Sul":     "🇰🇷",
-    "República Tcheca":  "🇨🇿",
+    "México":            "mx",
+    "África do Sul":     "za",
+    "Coreia do Sul":     "kr",
+    "República Tcheca":  "cz",
     # Grupo B
-    "Canadá":                "🇨🇦",
-    "Bósnia e Herzegovina":  "🇧🇦",
-    "Catar":                 "🇶🇦",
-    "Suíça":                 "🇨🇭",
+    "Canadá":                "ca",
+    "Bósnia e Herzegovina":  "ba",
+    "Catar":                 "qa",
+    "Suíça":                 "ch",
     # Grupo C
-    "Brasil":    "🇧🇷",
-    "Marrocos":  "🇲🇦",
-    "Haiti":     "🇭🇹",
-    "Escócia":   "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "Brasil":    "br",
+    "Marrocos":  "ma",
+    "Haiti":     "ht",
+    "Escócia":   "gb-sct",
     # Grupo D
-    "Estados Unidos":  "🇺🇸",
-    "Paraguai":        "🇵🇾",
-    "Austrália":       "🇦🇺",
-    "Turquia":         "🇹🇷",
+    "Estados Unidos":  "us",
+    "Paraguai":        "py",
+    "Austrália":       "au",
+    "Turquia":         "tr",
     # Grupo E
-    "Alemanha":        "🇩🇪",
-    "Curaçau":         "🇨🇼",
-    "Costa do Marfim": "🇨🇮",
-    "Equador":         "🇪🇨",
+    "Alemanha":        "de",
+    "Curaçau":         "cw",
+    "Costa do Marfim": "ci",
+    "Equador":         "ec",
     # Grupo F
-    "Holanda":  "🇳🇱",
-    "Japão":    "🇯🇵",
-    "Suécia":   "🇸🇪",
-    "Tunísia":  "🇹🇳",
+    "Holanda":  "nl",
+    "Japão":    "jp",
+    "Suécia":   "se",
+    "Tunísia":  "tn",
     # Grupo G
-    "Bélgica":      "🇧🇪",
-    "Egito":        "🇪🇬",
-    "Irã":          "🇮🇷",
-    "Nova Zelândia":"🇳🇿",
+    "Bélgica":      "be",
+    "Egito":        "eg",
+    "Irã":          "ir",
+    "Nova Zelândia":"nz",
     # Grupo H
-    "Espanha":       "🇪🇸",
-    "Cabo Verde":    "🇨🇻",
-    "Arábia Saudita":"🇸🇦",
-    "Uruguai":       "🇺🇾",
+    "Espanha":        "es",
+    "Cabo Verde":     "cv",
+    "Arábia Saudita": "sa",
+    "Uruguai":        "uy",
     # Grupo I
-    "França":   "🇫🇷",
-    "Senegal":  "🇸🇳",
-    "Iraque":   "🇮🇶",
-    "Noruega":  "🇳🇴",
+    "França":   "fr",
+    "Senegal":  "sn",
+    "Iraque":   "iq",
+    "Noruega":  "no",
     # Grupo J
-    "Argentina": "🇦🇷",
-    "Argélia":   "🇩🇿",
-    "Áustria":   "🇦🇹",
-    "Jordânia":  "🇯🇴",
+    "Argentina": "ar",
+    "Argélia":   "dz",
+    "Áustria":   "at",
+    "Jordânia":  "jo",
     # Grupo K
-    "Portugal":       "🇵🇹",
-    "R. D. do Congo": "🇨🇩",
-    "Uzbequistão":    "🇺🇿",
-    "Colômbia":       "🇨🇴",
+    "Portugal":       "pt",
+    "R. D. do Congo": "cd",
+    "Uzbequistão":    "uz",
+    "Colômbia":       "co",
     # Grupo L
-    "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "Croácia":    "🇭🇷",
-    "Gana":       "🇬🇭",
-    "Panamá":     "🇵🇦",
+    "Inglaterra": "gb-eng",
+    "Croácia":    "hr",
+    "Gana":       "gh",
+    "Panamá":     "pa",
 }
 
-
-def flag(team: str) -> str:
-    return FLAGS.get(team, "")
+_IMG = '<img src="https://flagcdn.com/w20/{code}.png" style="vertical-align:middle;margin-right:3px">'
 
 
-def with_flag(team: str) -> str:
-    f = FLAGS.get(team, "")
-    return f"{f} {team}" if f else team
+def flag_html(team: str) -> str:
+    """Return an <img> tag for the team's flag, or empty string if unknown."""
+    code = FLAG_CODES.get(team)
+    return _IMG.format(code=code) if code else ""
+
+
+def with_flag_html(team: str) -> str:
+    """Return flag <img> + team name as HTML string."""
+    return f"{flag_html(team)}{team}"

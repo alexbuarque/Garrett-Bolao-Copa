@@ -6,7 +6,7 @@ import streamlit as st
 
 from utils.auth import is_logged_in
 from utils.data import get_all_matches, get_user_predictions, save_prediction
-from utils.flags import with_flag
+from utils.flags import with_flag_html
 
 st.image("assets/banner.png", use_container_width=True)
 
@@ -21,11 +21,9 @@ now = datetime.now(timezone.utc)
 
 GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
 
-# Single DB round-trip for all matches and user predictions
 all_matches = get_all_matches()
 user_preds = get_user_predictions(user_id)
 
-# Group matches by group name
 matches_by_group: dict[str, list] = {g: [] for g in GROUPS}
 for m in all_matches:
     g = m.get("group_name")
@@ -58,7 +56,12 @@ for tab, group in zip(tabs, GROUPS):
             with st.container(border=True):
                 col_info, col_preds = st.columns([2, 3])
                 with col_info:
-                    st.markdown(f"**{with_flag(match['team_a'])}** vs **{with_flag(match['team_b'])}**")
+                    ta_html = with_flag_html(match["team_a"])
+                    tb_html = with_flag_html(match["team_b"])
+                    st.markdown(
+                        f"<b>{ta_html}</b> vs <b>{tb_html}</b>",
+                        unsafe_allow_html=True,
+                    )
                     st.caption(match_dt.astimezone(BRASILIA).strftime("%d/%m/%Y %H:%M (Brasília)"))
                     if has_result:
                         st.markdown(
@@ -97,7 +100,7 @@ for tab, group in zip(tabs, GROUPS):
                         c1, c2, c3 = st.columns([2, 1, 2])
                         with c1:
                             ga = st.number_input(
-                                with_flag(match["team_a"]),
+                                match["team_a"],
                                 min_value=0,
                                 max_value=20,
                                 value=int(default_a),
@@ -110,7 +113,7 @@ for tab, group in zip(tabs, GROUPS):
                             )
                         with c3:
                             gb = st.number_input(
-                                with_flag(match["team_b"]),
+                                match["team_b"],
                                 min_value=0,
                                 max_value=20,
                                 value=int(default_b),
@@ -121,7 +124,7 @@ for tab, group in zip(tabs, GROUPS):
         if pending:
             if st.button(f"💾 Salvar palpites do Grupo {group}", use_container_width=True, key=f"save_{group}"):
                 saved = 0
-                save_now = datetime.now(timezone.utc)  # fresh timestamp at click time
+                save_now = datetime.now(timezone.utc)
                 for p in pending:
                     if save_now < p["match_dt"]:
                         if save_prediction(user_id, p["match_id"], p["ga"], p["gb"]):
