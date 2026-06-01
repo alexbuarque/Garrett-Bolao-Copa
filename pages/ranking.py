@@ -21,8 +21,10 @@ for pos, entry in enumerate(ranking, start=1):
         {
             "Pos.": medal,
             "Participante": entry["nickname"],
-            "Pontos Jogos": entry["match_points"],
-            "Pontos Especiais": entry["special_points"],
+            "Departamento": entry["department"],
+            "Turno": entry["shift"],
+            "Pts Jogos": entry["match_points"],
+            "Pts Especiais": entry["special_points"],
             "Total": entry["total_points"],
         }
     )

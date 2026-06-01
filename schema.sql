@@ -7,8 +7,14 @@
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     nickname TEXT NOT NULL UNIQUE,
+    department TEXT,
+    shift TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Run these if the table already exists (first deploy upgrade):
+-- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS department TEXT;
+-- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS shift TEXT;
 
 -- Matches (group stage)
 CREATE TABLE IF NOT EXISTS matches (

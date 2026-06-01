@@ -121,7 +121,7 @@ def get_special_results() -> dict:
 
 def get_ranking() -> list[dict]:
     client = get_admin_supabase()
-    profiles = client.table("profiles").select("id, nickname").execute().data or []
+    profiles = client.table("profiles").select("id, nickname, department, shift").execute().data or []
     preds = client.table("predictions").select("user_id, points").execute().data or []
     specials = (
         client.table("special_predictions").select("user_id, points").execute().data or []
@@ -141,6 +141,8 @@ def get_ranking() -> list[dict]:
         ranking.append(
             {
                 "nickname": prof["nickname"],
+                "department": prof.get("department") or "—",
+                "shift": prof.get("shift") or "—",
                 "match_points": mp,
                 "special_points": sp,
                 "total_points": mp + sp,

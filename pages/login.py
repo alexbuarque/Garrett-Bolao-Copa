@@ -1,6 +1,15 @@
 import streamlit as st
 from utils.auth import is_logged_in, login, register, logout, reset_password
 
+DEPARTMENTS = [
+    "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro",
+    "Desmontagem", "Montagem", "Manutenção", "Warehouse", "Yusen",
+    "Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
+    "OPM", "NPI", "ISC", "Usinagem",
+]
+
+SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
+
 st.title("🔐 Bolão da Copa 2026")
 
 if is_logged_in():
@@ -34,6 +43,8 @@ with tab_register:
     with st.form("form_register"):
         r_email = st.text_input("Email", key="r_email")
         r_nick = st.text_input("Apelido (como aparecerá no ranking)")
+        r_dept = st.selectbox("Departamento", DEPARTMENTS, key="r_dept")
+        r_shift = st.selectbox("Turno", SHIFTS, key="r_shift")
         r_pass = st.text_input("Senha (mínimo 6 caracteres)", type="password", key="r_pass")
         r_pass2 = st.text_input("Confirmar senha", type="password", key="r_pass2")
         submitted_r = st.form_submit_button("Criar conta", use_container_width=True)
@@ -45,7 +56,7 @@ with tab_register:
         elif len(r_pass) < 6:
             st.error("A senha precisa ter ao menos 6 caracteres.")
         else:
-            ok, err = register(r_email, r_pass, r_nick)
+            ok, err = register(r_email, r_pass, r_nick, r_dept, r_shift)
             if ok:
                 st.session_state["redirect_to_palpites"] = True
                 st.rerun()

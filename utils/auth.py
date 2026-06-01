@@ -39,7 +39,7 @@ def login(email: str, password: str) -> tuple[bool, str | None]:
         return False, msg
 
 
-def register(email: str, password: str, nickname: str) -> tuple[bool, str | None]:
+def register(email: str, password: str, nickname: str, department: str = "", shift: str = "") -> tuple[bool, str | None]:
     if not nickname.strip():
         return False, "O apelido não pode estar vazio."
     admin = get_admin_supabase()
@@ -61,7 +61,12 @@ def register(email: str, password: str, nickname: str) -> tuple[bool, str | None
         user = resp.user
         if user is None:
             return False, "Cadastro falhou. Tente novamente."
-        admin.table("profiles").insert({"id": user.id, "nickname": nickname.strip()}).execute()
+        admin.table("profiles").insert({
+            "id": user.id,
+            "nickname": nickname.strip(),
+            "department": department,
+            "shift": shift,
+        }).execute()
         if resp.session:
             st.session_state["user_id"] = user.id
             st.session_state["email"] = email
