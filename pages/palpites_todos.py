@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.data import get_all_matches, get_all_predictions_with_profiles
+from utils.flags import with_flag
 
 BRASILIA = timezone(timedelta(hours=-3))
 
@@ -28,16 +29,15 @@ for tab, group in zip(tabs, groups):
             finished = match.get("finished", False)
             dt = datetime.fromisoformat(match["match_date"]).astimezone(BRASILIA)
 
+            ta = with_flag(match["team_a"])
+            tb = with_flag(match["team_b"])
             if finished:
                 label = (
-                    f"✅ {match['team_a']} {match['result_a']} × {match['result_b']} "
-                    f"{match['team_b']} — {dt.strftime('%d/%m %H:%M')} BRT"
+                    f"✅ {ta} {match['result_a']} × {match['result_b']} "
+                    f"{tb} — {dt.strftime('%d/%m %H:%M')} BRT"
                 )
             else:
-                label = (
-                    f"⏳ {match['team_a']} × {match['team_b']} "
-                    f"— {dt.strftime('%d/%m %H:%M')} BRT"
-                )
+                label = f"⏳ {ta} × {tb} — {dt.strftime('%d/%m %H:%M')} BRT"
 
             preds = all_preds.get(mid, [])
             with st.expander(label, expanded=False):

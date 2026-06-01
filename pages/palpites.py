@@ -6,6 +6,7 @@ import streamlit as st
 
 from utils.auth import is_logged_in
 from utils.data import get_all_matches, get_user_predictions, save_prediction
+from utils.flags import with_flag
 
 st.image("assets/banner.png", use_container_width=True)
 
@@ -57,7 +58,7 @@ for tab, group in zip(tabs, GROUPS):
             with st.container(border=True):
                 col_info, col_preds = st.columns([2, 3])
                 with col_info:
-                    st.markdown(f"**{match['team_a']}** vs **{match['team_b']}**")
+                    st.markdown(f"**{with_flag(match['team_a'])}** vs **{with_flag(match['team_b'])}**")
                     st.caption(match_dt.astimezone(BRASILIA).strftime("%d/%m/%Y %H:%M (Brasília)"))
                     if has_result:
                         st.markdown(
@@ -96,7 +97,7 @@ for tab, group in zip(tabs, GROUPS):
                         c1, c2, c3 = st.columns([2, 1, 2])
                         with c1:
                             ga = st.number_input(
-                                match["team_a"],
+                                with_flag(match["team_a"]),
                                 min_value=0,
                                 max_value=20,
                                 value=int(default_a),
@@ -109,7 +110,7 @@ for tab, group in zip(tabs, GROUPS):
                             )
                         with c3:
                             gb = st.number_input(
-                                match["team_b"],
+                                with_flag(match["team_b"]),
                                 min_value=0,
                                 max_value=20,
                                 value=int(default_b),
