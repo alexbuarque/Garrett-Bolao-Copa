@@ -212,6 +212,33 @@ def save_special_results(artilheiro: str, mvp: str, goleiro: str) -> bool:
         return False
 
 
+def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
+    """Returns {match_id: [{nickname, pred_a, pred_b, points}]}."""
+    client = get_admin_supabase()
+    preds = (
+        client.table("predictions")
+        .select("user_id, match_id, pred_a, pred_b, points")
+        .execute()
+        .data or []
+    )
+    profiles = {
+        p["id"]: p["nickname"]
+        for p in (client.table("profiles").select("id, nickname").execute().data or [])
+    }
+    result: dict[int, list[dict]] = {}
+    for p in preds:
+        mid = p["match_id"]
+        if mid not in result:
+            result[mid] = []
+        result[mid].append({
+            "nickname": profiles.get(p["user_id"], "?"),
+            "pred_a": p["pred_a"],
+            "pred_b": p["pred_b"],
+            "points": p["points"] or 0,
+        })
+    return result
+
+
 def get_predictions_for_match(match_id: int) -> list[dict]:
     """Returns all users' predictions for a given match (for admin view)."""
     client = get_admin_supabase()
