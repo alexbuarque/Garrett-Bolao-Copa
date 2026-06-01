@@ -7,6 +7,7 @@ from utils.data import get_all_matches, get_all_predictions_with_profiles
 
 BRASILIA = timezone(timedelta(hours=-3))
 
+st.image("assets/banner.png", use_container_width=True)
 st.title("🔍 Palpites de Todos")
 
 matches = get_all_matches()

@@ -14,6 +14,8 @@ for key in ("user_id", "email", "nickname", "access_token", "refresh_token"):
 
 logged_in = bool(st.session_state["user_id"])
 
+st.logo("assets/logo_sidebar.png", size="large")
+
 login_page = st.Page("pages/login.py", title="Login / Cadastro", icon="🔐")
 palpites_page = st.Page("pages/palpites.py", title="Palpites", icon="⚽")
 especiais_page = st.Page("pages/especiais.py", title="Especiais", icon="🌟")
