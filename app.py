@@ -14,7 +14,7 @@ for key in ("user_id", "email", "nickname", "access_token", "refresh_token"):
 
 logged_in = bool(st.session_state["user_id"])
 
-st.logo("assets/logo_sidebar.png", size="large")
+st.logo("assets/logo_sidebar.png")
 
 st.markdown(
     """
@@ -36,7 +36,9 @@ admin_page = st.Page("pages/admin.py", title="Painel Admin", icon="🔧")
 if logged_in:
     pages = [palpites_page, ranking_page, todos_page, calendario_page, regras_page, admin_page, login_page]
 else:
-    pages = [login_page, ranking_page, todos_page, calendario_page, regras_page]
+    # Include palpites_page so an expired session at /palpites doesn't flash "Page not found".
+    # palpites.py has its own auth check and shows a login prompt instead.
+    pages = [login_page, palpites_page, ranking_page, todos_page, calendario_page, regras_page]
 
 pg = st.navigation(pages)
 
