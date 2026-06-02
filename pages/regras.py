@@ -12,8 +12,8 @@ with col1:
         <div style="background-color:#FFD700;border-radius:12px;padding:24px;text-align:center">
             <div style="font-size:2.5rem">🥇</div>
             <div style="font-size:1.1rem;font-weight:bold;color:#333">1º Lugar</div>
-            <div style="font-size:0.9rem;color:#555;margin-top:4px">Vale compra Centauro</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333">R$ 450,00</div>
+            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -24,8 +24,8 @@ with col2:
         <div style="background-color:#C0C0C0;border-radius:12px;padding:24px;text-align:center">
             <div style="font-size:2.5rem">🥈</div>
             <div style="font-size:1.1rem;font-weight:bold;color:#333">2º Lugar</div>
-            <div style="font-size:0.9rem;color:#555;margin-top:4px">Vale compra Centauro</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333">R$ 300,00</div>
+            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -36,8 +36,8 @@ with col3:
         <div style="background-color:#CD7F32;border-radius:12px;padding:24px;text-align:center">
             <div style="font-size:2.5rem">🥉</div>
             <div style="font-size:1.1rem;font-weight:bold;color:#333">3º Lugar</div>
-            <div style="font-size:0.9rem;color:#555;margin-top:4px">Vale compra Centauro</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333">R$ 150,00</div>
+            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
