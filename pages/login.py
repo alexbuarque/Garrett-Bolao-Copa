@@ -2,10 +2,10 @@ import streamlit as st
 from utils.auth import is_logged_in, login, register, logout, reset_password, complete_password_reset
 
 DEPARTMENTS = [
-    "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro",
+    "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro", "Fiscal",
     "Desmontagem", "Montagem", "Manutenção", "Warehouse", "Yusen",
     "Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
-    "OPM", "NPI", "ISC", "Usinagem",
+    "Produção", "NPI", "ISC", "Usinagem", "GEM", "PM", "Supply Chain", 
 ]
 
 SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
