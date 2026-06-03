@@ -30,7 +30,7 @@ palpites_page = st.Page("pages/palpites.py", title="Palpites", icon="⚽")
 ranking_page = st.Page("pages/ranking.py", title="Ranking", icon="🏆")
 todos_page = st.Page("pages/palpites_todos.py", title="Palpites de Todos", icon="🔍")
 calendario_page = st.Page("pages/calendario.py", title="Calendário", icon="📅")
-regras_page = st.Page("pages/regras.py", title="Regras e Prêmios", icon="📋")
+regras_page = st.Page("pages/regras.py", title="Regras", icon="📋")
 admin_page = st.Page("pages/admin.py", title="Painel Admin", icon="🔧")
 
 if logged_in:
