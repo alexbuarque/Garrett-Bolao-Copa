@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("🏅 Prêmios e Regras")
+st.title("Regras")
 
 # ── Regras ────────────────────────────────────────────────────────────────────
 st.header("📋 Regras de Pontuação")
