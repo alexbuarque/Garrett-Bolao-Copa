@@ -2,49 +2,6 @@ import streamlit as st
 
 st.title("🏅 Prêmios e Regras")
 
-# ── Prêmios ───────────────────────────────────────────────────────────────────
-st.header("🏆 Premiação")
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.markdown(
-        """
-        <div style="background-color:#FFD700;border-radius:12px;padding:24px;text-align:center">
-            <div style="font-size:2.5rem">🥇</div>
-            <div style="font-size:1.1rem;font-weight:bold;color:#333">1º Lugar</div>
-            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333;margin-top:4px">R$ 600,00</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col2:
-    st.markdown(
-        """
-        <div style="background-color:#C0C0C0;border-radius:12px;padding:24px;text-align:center">
-            <div style="font-size:2.5rem">🥈</div>
-            <div style="font-size:1.1rem;font-weight:bold;color:#333">2º Lugar</div>
-            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333;margin-top:4px">R$ 400,00</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col3:
-    st.markdown(
-        """
-        <div style="background-color:#CD7F32;border-radius:12px;padding:24px;text-align:center">
-            <div style="font-size:2.5rem">🥉</div>
-            <div style="font-size:1.1rem;font-weight:bold;color:#333">3º Lugar</div>
-            <div style="font-size:1.3rem;font-weight:bold;color:#333;margin-top:8px">Vale Presente</div>
-            <div style="font-size:1.6rem;font-weight:bold;color:#333;margin-top:4px">R$ 200,00</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-st.divider()
-
 # ── Regras ────────────────────────────────────────────────────────────────────
 st.header("📋 Regras de Pontuação")
 
