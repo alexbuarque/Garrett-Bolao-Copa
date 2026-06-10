@@ -42,6 +42,9 @@ st.markdown(
     "**Resultado correto:** quando você acerta o vencedor da partida ou o empate, "
     "independentemente do número de gols."
 )
+st.markdown(
+    "**Regra de empate de pontos:** Caso haja empate, será levado em consideração a pessoa que acertar a maior quantidade de placares exatos"
+)
 st.info(
     "Os pontos **não são acumulativos**. Ou seja, ao acertar o placar exato, você recebe "
     "apenas a pontuação máxima desse acerto, não sendo somada a pontuação de resultado correto.",
