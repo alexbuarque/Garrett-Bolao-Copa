@@ -6,6 +6,45 @@ from utils.data import get_ranking
 
 st.title("🏆 Ranking")
 
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown(
+        """
+        <div style="background-color:#FFD700;border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:2rem">🥇</div>
+            <div style="font-size:1rem;font-weight:bold;color:#333">1º Lugar</div>
+            <div style="font-size:1rem;color:#333;margin-top:6px">👕 Camisa oficial<br>Seleção Brasileira</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+with col2:
+    st.markdown(
+        """
+        <div style="background-color:#C0C0C0;border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:2rem">🥈</div>
+            <div style="font-size:1rem;font-weight:bold;color:#333">2º Lugar</div>
+            <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+with col3:
+    st.markdown(
+        """
+        <div style="background-color:#CD7F32;border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:2rem">🥉</div>
+            <div style="font-size:1rem;font-weight:bold;color:#333">3º Lugar</div>
+            <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.divider()
+
 ranking = get_ranking()
 
 if not ranking:
