@@ -13,7 +13,8 @@ with col1:
         <div style="background-color:#FFD700;border-radius:12px;padding:20px;text-align:center">
             <div style="font-size:2rem">🥇</div>
             <div style="font-size:1rem;font-weight:bold;color:#333">1º Lugar</div>
-            <div style="font-size:1rem;color:#333;margin-top:6px">👕 Camisa oficial<br>Seleção Brasileira</div>
+            <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
+            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
