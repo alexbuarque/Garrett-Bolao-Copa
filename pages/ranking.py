@@ -14,7 +14,6 @@ with col1:
             <div style="font-size:2rem">🥇</div>
             <div style="font-size:1rem;font-weight:bold;color:#333">1º Lugar</div>
             <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
-            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -26,7 +25,6 @@ with col2:
             <div style="font-size:2rem">🥈</div>
             <div style="font-size:1rem;font-weight:bold;color:#333">2º Lugar</div>
             <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
-            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -38,7 +36,6 @@ with col3:
             <div style="font-size:2rem">🥉</div>
             <div style="font-size:1rem;font-weight:bold;color:#333">3º Lugar</div>
             <div style="font-size:1rem;color:#333;margin-top:6px">🎁 Vale Presente</div>
-            <div style="font-size:0.8rem;color:#666;margin-top:4px">Valor a ser definido</div>
         </div>
         """,
         unsafe_allow_html=True,
