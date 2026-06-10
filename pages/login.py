@@ -37,7 +37,7 @@ if params.get("type") == "recovery":
     st.stop()
 
 # ── Normal login / register flow ──────────────────────────────────────────────
-st.title("🔐 Bolão da Copa 2026")
+st.title("🔐 Ação entre amigos — Copa 2026")
 
 if is_logged_in():
     st.success(f"Você está logado como **{st.session_state['nickname']}**.")

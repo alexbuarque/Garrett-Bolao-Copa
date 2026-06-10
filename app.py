@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Bolão da Copa 2026",
+    page_title="Ação entre amigos — Copa 2026",
     page_icon="⚽",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -25,6 +25,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+home_page = st.Page("pages/home.py", title="Início", icon="🏠")
 login_page = st.Page("pages/login.py", title="Login / Cadastro", icon="🔐")
 palpites_page = st.Page("pages/palpites.py", title="Palpites", icon="⚽")
 ranking_page = st.Page("pages/ranking.py", title="Ranking", icon="🏆")
@@ -34,11 +35,11 @@ regras_page = st.Page("pages/regras.py", title="Regras", icon="📋")
 admin_page = st.Page("pages/admin.py", title="Painel Admin", icon="🔧")
 
 if logged_in:
-    pages = [palpites_page, ranking_page, todos_page, calendario_page, regras_page, admin_page, login_page]
+    pages = [home_page, palpites_page, ranking_page, todos_page, calendario_page, regras_page, admin_page, login_page]
 else:
     # Include palpites_page so an expired session at /palpites doesn't flash "Page not found".
     # palpites.py has its own auth check and shows a login prompt instead.
-    pages = [login_page, palpites_page, ranking_page, todos_page, calendario_page, regras_page]
+    pages = [home_page, login_page, palpites_page, ranking_page, todos_page, calendario_page, regras_page]
 
 pg = st.navigation(pages)
 

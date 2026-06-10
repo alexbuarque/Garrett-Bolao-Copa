@@ -8,7 +8,6 @@ from utils.flags import with_flag_html
 
 BRASILIA = timezone(timedelta(hours=-3))
 
-st.image("assets/banner.png", use_container_width=True)
 st.title("🔍 Palpites de Todos")
 
 matches = get_all_matches()

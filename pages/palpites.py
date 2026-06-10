@@ -8,8 +8,6 @@ from utils.auth import is_logged_in
 from utils.data import get_all_matches, get_user_predictions, save_prediction
 from utils.flags import with_flag_html
 
-st.image("assets/banner.png", use_container_width=True)
-
 if not is_logged_in():
     st.warning("Faça login para dar seus palpites.")
     st.stop()
