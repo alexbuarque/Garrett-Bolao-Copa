@@ -1,13 +1,13 @@
 import streamlit as st
 
-st.image("assets/banner.png", use_container_width=True)
-
 st.markdown("## Ação entre amigos — Copa 2026")
 st.markdown(
     "Bem-vindo à ação entre amigos da Copa do Mundo 2026! "
     "Esta iniciativa é destinada a **Colaboradores Garrett** e **Terceiros** "
     "que queiram participar de uma disputa amigável de palpites ao longo do torneio."
 )
+
+st.image("assets/banner.png", use_container_width=True)
 
 st.divider()
 
@@ -65,4 +65,5 @@ st.markdown(
 )
 
 if not st.session_state.get("user_id"):
-    st.info("Ainda não tem conta? Acesse **Login / Cadastro** no menu lateral para se registrar.", icon="👤")
+    st.info("Ainda não tem conta? Clique no link abaixo para se cadastrar.", icon="👤")
+    st.page_link("pages/login.py", label="Criar conta / Fazer login", icon="🔐")
