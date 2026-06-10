@@ -47,7 +47,7 @@ with col3:
             <div style="font-size:2rem">🎁</div>
             <div style="font-size:1rem;font-weight:bold;color:#fff;margin-top:8px">Concorra a prêmios</div>
             <div style="font-size:0.85rem;color:#ccc;margin-top:6px">
-                Os três melhores colocados no ranking ganham vale presentes.
+                Os três melhores colocados no ranking ganham prêmios.
             </div>
         </div>
         """,
