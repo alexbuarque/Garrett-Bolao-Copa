@@ -50,3 +50,14 @@ st.info(
     "apenas a pontuação máxima desse acerto, não sendo somada a pontuação de resultado correto.",
     icon="ℹ️",
 )
+
+st.divider()
+
+st.header("📜 Regulamento")
+st.markdown(
+    """
+    - A participação é **voluntária** e não possui qualquer relação com avaliação de desempenho ou obrigações profissionais.
+    - A ação possui caráter **exclusivamente recreativo**, não gerando qualquer natureza salarial.
+    - A participação de **trabalhadores terceirizados** ocorre de forma independente, não implicando em qualquer vínculo empregatício com a empresa promotora.
+    """
+)

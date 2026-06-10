@@ -67,6 +67,12 @@ with tab_login:
 
 # ── Criar conta ───────────────────────────────────────────────────────────────
 with tab_register:
+    st.caption(
+        "⚠️ Ao criar sua conta, você declara estar ciente de que: "
+        "a participação é voluntária e sem relação com obrigações profissionais; "
+        "a ação tem caráter exclusivamente recreativo, sem natureza salarial; "
+        "a participação de terceirizados é independente e não gera vínculo empregatício."
+    )
     with st.form("form_register"):
         r_email = st.text_input("Email", key="r_email")
         r_nick = st.text_input("Apelido (como aparecerá no ranking)")
