@@ -67,11 +67,16 @@ with tab_login:
 
 # ── Criar conta ───────────────────────────────────────────────────────────────
 with tab_register:
-    st.caption(
-        "⚠️ Ao criar sua conta, você declara estar ciente de que: "
-        "a participação é voluntária e sem relação com obrigações profissionais; "
-        "a ação tem caráter exclusivamente recreativo, sem natureza salarial; "
-        "a participação de terceirizados é independente e não gera vínculo empregatício."
+    st.markdown(
+        """
+        <div style="font-size:0.85rem;color:#aaa;margin-bottom:8px">
+            ⚠️ Ao criar sua conta, você declara estar ciente de que:<br><br>
+            1. A participação é voluntária e não possui qualquer relação com avaliação de desempenho ou obrigações profissionais.<br><br>
+            2. A ação possui caráter exclusivamente recreativo, não gerando qualquer natureza salarial.<br><br>
+            3. A participação de trabalhadores terceirizados ocorre de forma independente, não implicando em qualquer vínculo empregatício com a empresa promotora.
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
     with st.form("form_register"):
         r_email = st.text_input("Email", key="r_email")
