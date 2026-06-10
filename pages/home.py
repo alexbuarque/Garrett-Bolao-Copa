@@ -7,6 +7,8 @@ st.markdown(
     "que queiram participar de uma disputa amigável de palpites ao longo do torneio."
 )
 
+st.divider()
+
 st.image("assets/banner.png", use_container_width=True)
 
 st.divider()
