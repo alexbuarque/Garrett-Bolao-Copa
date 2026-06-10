@@ -17,7 +17,7 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown(
         """
-        <div style="background-color:#1a3a5c;border-radius:10px;padding:20px;text-align:center">
+        <div style="background-color:#1a3a5c;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px">
             <div style="font-size:2rem">⚽</div>
             <div style="font-size:1rem;font-weight:bold;color:#fff;margin-top:8px">Dê seus palpites</div>
             <div style="font-size:0.85rem;color:#ccc;margin-top:6px">
@@ -30,7 +30,7 @@ with col1:
 with col2:
     st.markdown(
         """
-        <div style="background-color:#1a472a;border-radius:10px;padding:20px;text-align:center">
+        <div style="background-color:#1a472a;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px">
             <div style="font-size:2rem">🏆</div>
             <div style="font-size:1rem;font-weight:bold;color:#fff;margin-top:8px">Acumule pontos</div>
             <div style="font-size:0.85rem;color:#ccc;margin-top:6px">
@@ -43,7 +43,7 @@ with col2:
 with col3:
     st.markdown(
         """
-        <div style="background-color:#4a1a5c;border-radius:10px;padding:20px;text-align:center">
+        <div style="background-color:#4a1a5c;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px">
             <div style="font-size:2rem">🎁</div>
             <div style="font-size:1rem;font-weight:bold;color:#fff;margin-top:8px">Concorra a prêmios</div>
             <div style="font-size:0.85rem;color:#ccc;margin-top:6px">
