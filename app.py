@@ -43,6 +43,10 @@ else:
 
 pg = st.navigation(pages)
 
+# Redirect password reset links to login page where the reset form lives
+if st.query_params.get("type") == "recovery":
+    st.switch_page(login_page)
+
 # Redirect to palpites after login/register (flag set by login.py)
 if logged_in and st.session_state.pop("redirect_to_palpites", False):
     st.switch_page(palpites_page)
