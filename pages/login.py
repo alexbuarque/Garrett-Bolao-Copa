@@ -5,7 +5,7 @@ DEPARTMENTS = [
     "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro", "Fiscal",
     "Desmontagem", "Montagem", "Manutenção", "Warehouse", "Yusen",
     "Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
-    "Produção", "NPI", "ISC", "Usinagem", "GEM", "PM", "Supply Chain", 
+    "Produção", "NPI", "ISC", "Usinagem", "GEM", "PM", "Supply Chain", "Supply Base", 
 ]
 
 SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
