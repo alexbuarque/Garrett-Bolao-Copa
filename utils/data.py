@@ -68,15 +68,16 @@ def save_prediction(user_id: str, match_id: int, pred_a: int, pred_b: int) -> bo
 
 # ── Ranking ───────────────────────────────────────────────────────────────────
 
+@st.cache_data(ttl=300)
 def get_ranking() -> list[dict]:
     client = get_admin_supabase()
     profiles = client.table("profiles").select("id, nickname, department, shift").execute().data or []
     if not profiles:
         return []
 
-    matches = get_all_matches()
+    finished_matches = [m for m in get_all_matches() if m.get("finished")]
     user_pts: dict[str, int] = {}
-    for match in matches:
+    for match in finished_matches:
         preds = (
             client.table("predictions")
             .select("user_id, points")
@@ -113,6 +114,8 @@ def update_match_result(match_id: int, result_a: int, result_b: int) -> bool:
             {"result_a": result_a, "result_b": result_b, "finished": True}
         ).eq("id", match_id).execute()
         _recalculate_match_points(match_id, result_a, result_b)
+        get_ranking.clear()
+        get_all_predictions_with_profiles.clear()
         return True
     except Exception:
         return False
@@ -132,6 +135,7 @@ def _recalculate_match_points(match_id: int, result_a: int, result_b: int) -> No
         client.table("predictions").update({"points": pts}).eq("id", pred["id"]).execute()
 
 
+@st.cache_data(ttl=300)
 def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
     """Returns {match_id: [{nickname, pred_a, pred_b, points}]}."""
     client = get_admin_supabase()
