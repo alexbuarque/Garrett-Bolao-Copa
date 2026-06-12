@@ -122,10 +122,19 @@ for tab, group in zip(tabs, GROUPS):
         if pending:
             if st.button(f"💾 Salvar palpites do Grupo {group}", use_container_width=True, key=f"save_{group}"):
                 saved = 0
+                blocked = 0
                 save_now = datetime.now(timezone.utc)
                 for p in pending:
                     if save_now < p["match_dt"]:
                         if save_prediction(user_id, p["match_id"], p["ga"], p["gb"]):
                             saved += 1
-                st.toast(f"Palpites salvos! ({saved} jogo(s) no Grupo {group})", icon="✅")
+                    else:
+                        blocked += 1
+                if saved:
+                    st.toast(f"Palpites salvos! ({saved} jogo(s) no Grupo {group})", icon="✅")
+                if blocked:
+                    st.warning(
+                        f"{blocked} jogo(s) não foram salvos pois o prazo já encerrou.",
+                        icon="⚠️",
+                    )
                 st.rerun()
