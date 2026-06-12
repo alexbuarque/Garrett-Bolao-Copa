@@ -11,7 +11,10 @@ from utils.data import (
     update_match_result,
     seed_matches_if_empty,
     reseed_matches,
+    get_orphaned_predictions,
+    create_missing_profile,
 )
+from utils.supabase_client import get_admin_supabase
 
 st.title("🔧 Painel Administrativo")
 
@@ -40,8 +43,16 @@ st.success("✅ Acesso administrativo ativo.")
 # Fetch matches once, share across tabs
 all_matches = get_all_matches()
 
-tab_seed, tab_results, tab_view = st.tabs(
-    ["⚙️ Inicializar", "📋 Resultados", "👁️ Ver Palpites"]
+DEPARTMENTS = [
+    "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro", "Fiscal",
+    "Desmontagem", "Montagem", "Manutenção", "Warehouse", "Yusen",
+    "Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
+    "Produção", "NPI", "ISC", "Usinagem", "GEM", "PM", "Supply Chain", "Supply Base",
+]
+SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
+
+tab_seed, tab_results, tab_view, tab_diag = st.tabs(
+    ["⚙️ Inicializar", "📋 Resultados", "👁️ Ver Palpites", "🔍 Diagnóstico"]
 )
 
 # ── Seed ──────────────────────────────────────────────────────────────────────
@@ -149,3 +160,47 @@ with tab_view:
                 )
                 df = df.sort_values("Pontos", ascending=False)
                 st.dataframe(df, use_container_width=True, hide_index=True)
+
+# ── Diagnóstico ───────────────────────────────────────────────────────────────
+with tab_diag:
+    st.subheader("Usuários com palpites sem perfil")
+    st.markdown(
+        "Identifica usuários que possuem palpites registrados mas não têm perfil na "
+        "tabela de participantes — esses usuários não aparecem no ranking nem em "
+        "Palpites de Todos."
+    )
+
+    orphans = get_orphaned_predictions()
+
+    if not orphans:
+        st.success("✅ Nenhum problema encontrado. Todos os palpites têm perfil correspondente.")
+    else:
+        st.warning(f"⚠️ {len(orphans)} usuário(s) com palpites mas sem perfil cadastrado.")
+
+        # Try to fetch emails from Supabase Auth
+        try:
+            auth_users = get_admin_supabase().auth.admin.list_users()
+            auth_map = {u.id: u.email for u in auth_users}
+        except Exception:
+            auth_map = {}
+
+        for orphan in orphans:
+            uid = orphan["user_id"]
+            email = auth_map.get(uid, "email não encontrado")
+            label = f"{email} — {orphan['pred_count']} palpite(s), {orphan['total_points']} pts"
+            with st.expander(f"⚠️ {label}"):
+                st.caption(f"user_id: `{uid}`")
+                with st.form(f"fix_{uid}"):
+                    default_nick = email.split("@")[0] if "@" in email else ""
+                    fix_nick = st.text_input("Apelido", value=default_nick, key=f"nick_{uid}")
+                    fix_dept = st.selectbox("Departamento", [""] + DEPARTMENTS, key=f"dept_{uid}")
+                    fix_shift = st.selectbox("Turno", [""] + SHIFTS, key=f"shift_{uid}")
+                    fix_btn = st.form_submit_button("Criar perfil para este usuário", use_container_width=True)
+                if fix_btn:
+                    if not fix_nick.strip():
+                        st.error("Informe um apelido.")
+                    elif create_missing_profile(uid, fix_nick, fix_dept, fix_shift):
+                        st.success(f"Perfil criado para **{fix_nick}**! Os palpites já aparecem no ranking.")
+                        st.rerun()
+                    else:
+                        st.error("Erro ao criar perfil. O apelido pode já estar em uso.")

@@ -174,6 +174,37 @@ def get_predictions_for_match(match_id: int) -> list[dict]:
     ]
 
 
+def get_orphaned_predictions() -> list[dict]:
+    """Returns data for user_ids that have predictions but no profiles row."""
+    client = get_admin_supabase()
+    profile_ids = {p["id"] for p in (client.table("profiles").select("id").execute().data or [])}
+    preds = client.table("predictions").select("user_id, points").execute().data or []
+
+    user_data: dict[str, dict] = {}
+    for p in preds:
+        uid = p["user_id"]
+        if uid not in user_data:
+            user_data[uid] = {"user_id": uid, "pred_count": 0, "total_points": 0}
+        user_data[uid]["pred_count"] += 1
+        user_data[uid]["total_points"] += p["points"] or 0
+
+    return [v for uid, v in user_data.items() if uid not in profile_ids]
+
+
+def create_missing_profile(user_id: str, nickname: str, department: str, shift: str) -> bool:
+    client = get_admin_supabase()
+    try:
+        client.table("profiles").insert({
+            "id": user_id,
+            "nickname": nickname.strip(),
+            "department": department,
+            "shift": shift,
+        }).execute()
+        return True
+    except Exception:
+        return False
+
+
 def seed_matches_if_empty() -> None:
     """Insert all 72 fixtures if the matches table is empty."""
     from data.matches import get_all_fixtures
