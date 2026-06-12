@@ -71,7 +71,19 @@ def save_prediction(user_id: str, match_id: int, pred_a: int, pred_b: int) -> bo
 def get_ranking() -> list[dict]:
     client = get_admin_supabase()
     profiles = client.table("profiles").select("id, nickname, department, shift").execute().data or []
-    preds = client.table("predictions").select("user_id, points").execute().data or []
+    if not profiles:
+        return []
+
+    # Filter predictions by known user IDs — avoids full-table scan that may
+    # be blocked by RLS policies while filtered queries are permitted.
+    profile_ids = [p["id"] for p in profiles]
+    preds = (
+        client.table("predictions")
+        .select("user_id, points")
+        .in_("user_id", profile_ids)
+        .execute()
+        .data or []
+    )
 
     match_pts: dict[str, int] = {}
     for p in preds:
@@ -125,23 +137,27 @@ def _recalculate_match_points(match_id: int, result_a: int, result_b: int) -> No
 def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
     """Returns {match_id: [{nickname, pred_a, pred_b, points}]}."""
     client = get_admin_supabase()
+    profiles_data = client.table("profiles").select("id, nickname").execute().data or []
+    profiles = {p["id"]: p["nickname"] for p in profiles_data}
+    if not profiles:
+        return {}
+
+    # Filter by known user IDs — avoids full-table scan that may be blocked
+    # by RLS policies while filtered queries are permitted.
     preds = (
         client.table("predictions")
         .select("user_id, match_id, pred_a, pred_b, points")
+        .in_("user_id", list(profiles.keys()))
         .execute()
         .data or []
     )
-    profiles = {
-        p["id"]: p["nickname"]
-        for p in (client.table("profiles").select("id, nickname").execute().data or [])
-    }
     result: dict[int, list[dict]] = {}
     for p in preds:
         mid = p["match_id"]
         if mid not in result:
             result[mid] = []
         result[mid].append({
-            "nickname": profiles.get(p["user_id"], "?"),
+            "nickname": profiles[p["user_id"]],
             "pred_a": p["pred_a"],
             "pred_b": p["pred_b"],
             "points": p["points"] or 0,
