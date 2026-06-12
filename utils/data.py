@@ -74,13 +74,12 @@ def get_ranking() -> list[dict]:
     if not profiles:
         return []
 
-    # Filter predictions by known user IDs — avoids full-table scan that may
-    # be blocked by RLS policies while filtered queries are permitted.
-    profile_ids = [p["id"] for p in profiles]
+    # gte("match_id", 1) mirrors the pattern used in get_predictions_for_match
+    # (filtered queries work; unfiltered selects are blocked by RLS).
     preds = (
         client.table("predictions")
         .select("user_id, points")
-        .in_("user_id", profile_ids)
+        .gte("match_id", 1)
         .execute()
         .data or []
     )
@@ -142,12 +141,10 @@ def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
     if not profiles:
         return {}
 
-    # Filter by known user IDs — avoids full-table scan that may be blocked
-    # by RLS policies while filtered queries are permitted.
     preds = (
         client.table("predictions")
         .select("user_id, match_id, pred_a, pred_b, points")
-        .in_("user_id", list(profiles.keys()))
+        .gte("match_id", 1)
         .execute()
         .data or []
     )
@@ -194,7 +191,7 @@ def get_orphaned_predictions() -> list[dict]:
     """Returns data for user_ids that have predictions but no profiles row."""
     client = get_admin_supabase()
     profile_ids = {p["id"] for p in (client.table("profiles").select("id").execute().data or [])}
-    preds = client.table("predictions").select("user_id, points").execute().data or []
+    preds = client.table("predictions").select("user_id, points").gte("match_id", 1).execute().data or []
 
     user_data: dict[str, dict] = {}
     for p in preds:
