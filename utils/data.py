@@ -74,30 +74,29 @@ def get_ranking() -> list[dict]:
     if not profiles:
         return []
 
-    # gte("match_id", 1) mirrors the pattern used in get_predictions_for_match
-    # (filtered queries work; unfiltered selects are blocked by RLS).
-    preds = (
-        client.table("predictions")
-        .select("user_id, points")
-        .gte("match_id", 1)
-        .execute()
-        .data or []
-    )
-
-    match_pts: dict[str, int] = {}
-    for p in preds:
-        match_pts[p["user_id"]] = match_pts.get(p["user_id"], 0) + (p["points"] or 0)
+    matches = get_all_matches()
+    user_pts: dict[str, int] = {}
+    for match in matches:
+        preds = (
+            client.table("predictions")
+            .select("user_id, points")
+            .eq("match_id", match["id"])
+            .execute()
+            .data or []
+        )
+        for p in preds:
+            uid = p["user_id"]
+            user_pts[uid] = user_pts.get(uid, 0) + (p["points"] or 0)
 
     ranking = []
     for prof in profiles:
         uid = prof["id"]
-        pts = match_pts.get(uid, 0)
         ranking.append(
             {
                 "nickname": prof["nickname"],
                 "department": prof.get("department") or "—",
                 "shift": prof.get("shift") or "—",
-                "total_points": pts,
+                "total_points": user_pts.get(uid, 0),
             }
         )
 
@@ -136,29 +135,35 @@ def _recalculate_match_points(match_id: int, result_a: int, result_b: int) -> No
 def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
     """Returns {match_id: [{nickname, pred_a, pred_b, points}]}."""
     client = get_admin_supabase()
+    matches = get_all_matches()
+    if not matches:
+        return {}
+
     profiles_data = client.table("profiles").select("id, nickname").execute().data or []
     profiles = {p["id"]: p["nickname"] for p in profiles_data}
     if not profiles:
         return {}
 
-    preds = (
-        client.table("predictions")
-        .select("user_id, match_id, pred_a, pred_b, points")
-        .gte("match_id", 1)
-        .execute()
-        .data or []
-    )
     result: dict[int, list[dict]] = {}
-    for p in preds:
-        mid = p["match_id"]
-        if mid not in result:
-            result[mid] = []
-        result[mid].append({
-            "nickname": profiles[p["user_id"]],
-            "pred_a": p["pred_a"],
-            "pred_b": p["pred_b"],
-            "points": p["points"] or 0,
-        })
+    for match in matches:
+        mid = match["id"]
+        preds = (
+            client.table("predictions")
+            .select("user_id, pred_a, pred_b, points")
+            .eq("match_id", mid)
+            .execute()
+            .data or []
+        )
+        if preds:
+            result[mid] = [
+                {
+                    "nickname": profiles.get(p["user_id"], "?"),
+                    "pred_a": p["pred_a"],
+                    "pred_b": p["pred_b"],
+                    "points": p["points"] or 0,
+                }
+                for p in preds
+            ]
     return result
 
 
