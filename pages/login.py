@@ -4,7 +4,7 @@ from utils.auth import is_logged_in, login, register, logout, reset_password, co
 DEPARTMENTS = [
     "Engenharia", "Garantia", "IAM Vendas", "OE Vendas", "Financeiro", "Fiscal",
     "Desmontagem", "Montagem", "Manutenção", "Warehouse", "Yusen",
-    "Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
+    "TC - Indaiá", "Qualidade", "RH", "HSE", "IT", "Manufatura",
     "Produção", "NPI", "ISC", "Usinagem", "GEM", "PM", "Supply Chain", "Supply Base", 
 ]
 
