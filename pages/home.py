@@ -1,4 +1,30 @@
 import streamlit as st
+from utils.auth import complete_password_reset
+
+# Handle password recovery links that land on the home page (/?type=recovery&token_hash=...)
+if st.query_params.get("type") == "recovery":
+    token_hash = st.query_params.get("token_hash", "")
+    st.title("🔐 Redefinir Senha")
+    if not token_hash:
+        st.error("Link inválido ou expirado. Solicite um novo link de redefinição.")
+        st.stop()
+    with st.form("form_new_password_home"):
+        new_pass = st.text_input("Nova senha (mínimo 6 caracteres)", type="password")
+        new_pass2 = st.text_input("Confirmar nova senha", type="password")
+        submitted = st.form_submit_button("Salvar nova senha", use_container_width=True)
+    if submitted:
+        if not new_pass or len(new_pass) < 6:
+            st.error("A senha precisa ter ao menos 6 caracteres.")
+        elif new_pass != new_pass2:
+            st.error("As senhas não coincidem.")
+        else:
+            ok, err = complete_password_reset(token_hash, new_pass)
+            if ok:
+                st.success("Senha redefinida com sucesso! Faça login com a nova senha.")
+                st.query_params.clear()
+            else:
+                st.error(err or "Erro ao redefinir senha. O link pode ter expirado.")
+    st.stop()
 
 st.markdown("## Ação entre amigos — Copa 2026")
 st.markdown(
