@@ -54,8 +54,8 @@ FIXTURES = [
     {"group_name": "G", "team_a": "Irã",               "team_b": "Nova Zelândia",     "match_date": "2026-06-16T01:00:00+00:00", "stage": "group"},
     {"group_name": "G", "team_a": "Bélgica",           "team_b": "Irã",               "match_date": "2026-06-21T19:00:00+00:00", "stage": "group"},
     {"group_name": "G", "team_a": "Nova Zelândia",     "team_b": "Egito",             "match_date": "2026-06-22T01:00:00+00:00", "stage": "group"},
-    {"group_name": "G", "team_a": "Egito",             "team_b": "Irã",               "match_date": "2026-06-27T11:00:00+00:00", "stage": "group"},
-    {"group_name": "G", "team_a": "Nova Zelândia",     "team_b": "Bélgica",           "match_date": "2026-06-27T11:00:00+00:00", "stage": "group"},
+    {"group_name": "G", "team_a": "Egito",             "team_b": "Irã",               "match_date": "2026-06-27T03:00:00+00:00", "stage": "group"},
+    {"group_name": "G", "team_a": "Nova Zelândia",     "team_b": "Bélgica",           "match_date": "2026-06-27T03:00:00+00:00", "stage": "group"},
     # ── GRUPO H ───────────────────────────────────────────────────────────────
     {"group_name": "H", "team_a": "Espanha",           "team_b": "Cabo Verde",        "match_date": "2026-06-15T16:00:00+00:00", "stage": "group"},
     {"group_name": "H", "team_a": "Arábia Saudita",    "team_b": "Uruguai",           "match_date": "2026-06-15T22:00:00+00:00", "stage": "group"},
