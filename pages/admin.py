@@ -13,7 +13,12 @@ from utils.data import (
     reseed_matches,
     get_orphaned_predictions,
     create_missing_profile,
+    seed_playoffs_if_empty,
+    get_playoff_matches,
+    update_match_teams,
+    update_match_datetime,
 )
+from data.matches import STAGE_LABELS, STAGE_ORDER
 from utils.supabase_client import get_admin_supabase
 
 st.title("🔧 Painel Administrativo")
@@ -51,8 +56,8 @@ DEPARTMENTS = [
 ]
 SHIFTS = ["1º Turno", "2º Turno", "3º Turno", "ADM"]
 
-tab_seed, tab_results, tab_view, tab_diag = st.tabs(
-    ["⚙️ Inicializar", "📋 Resultados", "👁️ Ver Palpites", "🔍 Diagnóstico"]
+tab_seed, tab_results, tab_playoffs, tab_view, tab_diag = st.tabs(
+    ["⚙️ Inicializar", "📋 Resultados", "🏆 Playoffs", "👁️ Ver Palpites", "🔍 Diagnóstico"]
 )
 
 # ── Seed ──────────────────────────────────────────────────────────────────────
@@ -131,6 +136,82 @@ with tab_results:
                         st.rerun()
                     else:
                         st.error("Erro ao salvar resultado.")
+
+# ── Playoffs ──────────────────────────────────────────────────────────────────
+with tab_playoffs:
+    st.subheader("Inicializar jogos eliminatórios")
+    st.markdown(
+        "Insere os 32 jogos do mata-mata com times placeholder. "
+        "Após confirmar os classificados, edite os times em cada jogo abaixo."
+    )
+    if st.button("➕ Inserir jogos eliminatórios", use_container_width=True):
+        ok, count = seed_playoffs_if_empty()
+        if ok:
+            st.success(f"{count} jogos inseridos com sucesso!")
+            st.rerun()
+        else:
+            st.info("Os jogos eliminatórios já estão cadastrados.")
+
+    st.divider()
+
+    playoff_matches = get_playoff_matches()
+    if not playoff_matches:
+        st.info("Nenhum jogo eliminatório cadastrado. Use o botão acima para inserir.")
+    else:
+        knockout_stages = [s for s in STAGE_ORDER if s != "group"]
+        for stage_key in knockout_stages:
+            stage_matches = [m for m in playoff_matches if m.get("stage") == stage_key]
+            if not stage_matches:
+                continue
+            st.subheader(STAGE_LABELS[stage_key])
+            for match in stage_matches:
+                mid = match["id"]
+                match_dt = datetime.fromisoformat(match["match_date"])
+                if match_dt.tzinfo is None:
+                    match_dt = match_dt.replace(tzinfo=timezone.utc)
+                match_dt_brt = match_dt.astimezone(BRASILIA)
+                finished = match.get("finished", False)
+                status = "✅" if finished else "⏳"
+                label = (
+                    f"{status} {match['team_a']} × {match['team_b']} "
+                    f"— {match_dt_brt.strftime('%d/%m %H:%M')} BRT"
+                )
+                with st.expander(label, expanded=False):
+                    col_teams, col_dt = st.columns(2)
+
+                    with col_teams:
+                        st.markdown("**Atualizar times**")
+                        with st.form(f"teams_{mid}"):
+                            new_a = st.text_input("Time A", value=match["team_a"], key=f"ta_{mid}")
+                            new_b = st.text_input("Time B", value=match["team_b"], key=f"tb_{mid}")
+                            if st.form_submit_button("💾 Salvar times", use_container_width=True):
+                                if update_match_teams(mid, new_a, new_b):
+                                    st.success("Times atualizados!")
+                                    st.rerun()
+                                else:
+                                    st.error("Erro ao salvar.")
+
+                    with col_dt:
+                        st.markdown("**Atualizar horário (Brasília)**")
+                        with st.form(f"dt_{mid}"):
+                            new_date = st.date_input("Data", value=match_dt_brt.date(), key=f"d_{mid}")
+                            new_time = st.time_input("Hora", value=match_dt_brt.time(), key=f"t_{mid}")
+                            if st.form_submit_button("💾 Salvar horário", use_container_width=True):
+                                from datetime import datetime as dt
+                                brt_dt = dt.combine(new_date, new_time).replace(tzinfo=BRASILIA)
+                                utc_iso = brt_dt.astimezone(timezone.utc).isoformat()
+                                if update_match_datetime(mid, utc_iso):
+                                    st.success("Horário atualizado!")
+                                    st.rerun()
+                                else:
+                                    st.error("Erro ao salvar.")
+
+                    if finished:
+                        st.markdown(
+                            f"✅ Resultado registrado: **{match['result_a']} × {match['result_b']}**"
+                        )
+                    else:
+                        st.caption("Resultado ainda não registrado — use a aba 📋 Resultados.")
 
 # ── View Predictions ──────────────────────────────────────────────────────────
 with tab_view:

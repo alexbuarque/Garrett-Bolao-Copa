@@ -249,6 +249,68 @@ def seed_matches_if_empty() -> None:
     client.table("matches").insert(rows).execute()
 
 
+def seed_playoffs_if_empty() -> tuple[bool, int]:
+    """Insert the 32 knockout fixtures if none exist yet. Returns (ok, count_inserted)."""
+    from data.matches import get_playoff_fixtures
+
+    client = get_admin_supabase()
+    existing = (
+        client.table("matches")
+        .select("id")
+        .neq("stage", "group")
+        .limit(1)
+        .execute()
+    )
+    if existing.data:
+        return False, 0
+    fixtures = get_playoff_fixtures()
+    rows = [
+        {
+            "group_name": f["group_name"],
+            "team_a": f["team_a"],
+            "team_b": f["team_b"],
+            "match_date": f["match_date"],
+            "stage": f["stage"],
+        }
+        for f in fixtures
+    ]
+    client.table("matches").insert(rows).execute()
+    return True, len(rows)
+
+
+def get_playoff_matches() -> list[dict]:
+    """Return all knockout-stage matches ordered by date."""
+    client = get_admin_supabase()
+    result = (
+        client.table("matches")
+        .select("*")
+        .neq("stage", "group")
+        .order("match_date")
+        .execute()
+    )
+    return result.data or []
+
+
+def update_match_teams(match_id: int, team_a: str, team_b: str) -> bool:
+    client = get_admin_supabase()
+    try:
+        client.table("matches").update(
+            {"team_a": team_a.strip(), "team_b": team_b.strip()}
+        ).eq("id", match_id).execute()
+        return True
+    except Exception:
+        return False
+
+
+def update_match_datetime(match_id: int, new_utc_iso: str) -> bool:
+    client = get_admin_supabase()
+    try:
+        client.table("matches").update({"match_date": new_utc_iso}).eq("id", match_id).execute()
+        return True
+    except Exception:
+        return False
+
+
 def reseed_matches() -> bool:
     """Delete all predictions and matches, then re-insert official fixtures."""
     from data.matches import get_all_fixtures
