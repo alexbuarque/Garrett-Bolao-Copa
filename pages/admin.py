@@ -18,7 +18,7 @@ from utils.data import (
     update_match_teams,
     update_match_datetime,
 )
-from data.matches import STAGE_LABELS, STAGE_ORDER
+from data.matches import STAGE_LABELS, STAGE_ORDER, ALL_TEAMS
 from utils.supabase_client import get_admin_supabase
 
 st.title("🔧 Painel Administrativo")
@@ -181,9 +181,16 @@ with tab_playoffs:
 
                     with col_teams:
                         st.markdown("**Atualizar times**")
+                        cur_a, cur_b = match["team_a"], match["team_b"]
+                        idx_a = ALL_TEAMS.index(cur_a) if cur_a in ALL_TEAMS else 0
+                        idx_b = ALL_TEAMS.index(cur_b) if cur_b in ALL_TEAMS else 0
                         with st.form(f"teams_{mid}"):
-                            new_a = st.text_input("Time A", value=match["team_a"], key=f"ta_{mid}")
-                            new_b = st.text_input("Time B", value=match["team_b"], key=f"tb_{mid}")
+                            if cur_a not in ALL_TEAMS:
+                                st.caption(f"Atual: {cur_a}")
+                            new_a = st.selectbox("Time A", ALL_TEAMS, index=idx_a, key=f"ta_{mid}")
+                            if cur_b not in ALL_TEAMS:
+                                st.caption(f"Atual: {cur_b}")
+                            new_b = st.selectbox("Time B", ALL_TEAMS, index=idx_b, key=f"tb_{mid}")
                             if st.form_submit_button("💾 Salvar times", use_container_width=True):
                                 if update_match_teams(mid, new_a, new_b):
                                     st.success("Times atualizados!")

@@ -194,6 +194,13 @@ PLAYOFF_FIXTURES = [
 ]
 
 
+ALL_TEAMS: list[str] = sorted({
+    name
+    for f in FIXTURES
+    for name in (f["team_a"], f["team_b"])
+})
+
+
 def get_all_fixtures() -> list[dict]:
     """Return all 72 group stage fixtures."""
     return FIXTURES
