@@ -60,9 +60,12 @@ for tab, group in zip(tabs, groups):
                 else:
                     rows = []
                     for p in sorted(preds, key=lambda x: x["nickname"].lower()):
+                        palpite = f"{p['pred_a']} × {p['pred_b']}"
+                        if p.get("pred_penalties") and p.get("pred_pen_a") is not None:
+                            palpite += f" (pên: {p['pred_pen_a']} × {p['pred_pen_b']})"
                         rows.append({
                             "Participante": p["nickname"],
-                            "Palpite": f"{p['pred_a']} × {p['pred_b']}",
+                            "Palpite": palpite,
                             "Pts": p["points"] if finished else "—",
                         })
                     df = pd.DataFrame(rows)

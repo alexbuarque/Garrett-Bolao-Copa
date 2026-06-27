@@ -192,7 +192,7 @@ def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
         mid = match["id"]
         preds = (
             client.table("predictions")
-            .select("user_id, pred_a, pred_b, points")
+            .select("user_id, pred_a, pred_b, pred_penalties, pred_pen_a, pred_pen_b, points")
             .eq("match_id", mid)
             .execute()
             .data or []
@@ -203,6 +203,9 @@ def get_all_predictions_with_profiles() -> dict[int, list[dict]]:
                     "nickname": profiles.get(p["user_id"], "?"),
                     "pred_a": p["pred_a"],
                     "pred_b": p["pred_b"],
+                    "pred_penalties": bool(p.get("pred_penalties")),
+                    "pred_pen_a": p.get("pred_pen_a"),
+                    "pred_pen_b": p.get("pred_pen_b"),
                     "points": p["points"] or 0,
                 }
                 for p in preds
