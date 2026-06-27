@@ -213,12 +213,61 @@ with tab_playoffs:
                                 else:
                                     st.error("Erro ao salvar.")
 
+                    st.divider()
+                    st.markdown("**Registrar resultado**")
                     if finished:
-                        st.markdown(
-                            f"✅ Resultado registrado: **{match['result_a']} × {match['result_b']}**"
+                        res_line = f"✅ Resultado: **{match['result_a']} × {match['result_b']}**"
+                        if match.get("result_penalties"):
+                            res_line += (
+                                f" *(pênaltis: {match['result_pen_a']} × {match['result_pen_b']})*"
+                            )
+                        st.markdown(res_line)
+                        st.caption("Para corrigir, preencha abaixo e salve novamente.")
+
+                    rc1, rc2 = st.columns(2)
+                    with rc1:
+                        r_a = st.number_input(
+                            f"Gols {match['team_a']}", min_value=0, max_value=30,
+                            value=int(match.get("result_a") or 0), key=f"ra_{mid}",
                         )
-                    else:
-                        st.caption("Resultado ainda não registrado — use a aba 📋 Resultados.")
+                    with rc2:
+                        r_b = st.number_input(
+                            f"Gols {match['team_b']}", min_value=0, max_value=30,
+                            value=int(match.get("result_b") or 0), key=f"rb_{mid}",
+                        )
+                    goes_to_pen = st.checkbox(
+                        "🥅 Jogo foi para pênaltis?",
+                        value=bool(match.get("result_penalties")),
+                        key=f"rpen_{mid}",
+                    )
+                    rpen_a = rpen_b = None
+                    if goes_to_pen:
+                        rp1, rp2 = st.columns(2)
+                        with rp1:
+                            rpen_a = st.number_input(
+                                f"Pênaltis {match['team_a']}", min_value=0, max_value=20,
+                                value=int(match.get("result_pen_a") or 0), key=f"rpena_{mid}",
+                            )
+                        with rp2:
+                            rpen_b = st.number_input(
+                                f"Pênaltis {match['team_b']}", min_value=0, max_value=20,
+                                value=int(match.get("result_pen_b") or 0), key=f"rpenb_{mid}",
+                            )
+                    if st.button(
+                        "💾 Salvar resultado e calcular pontos",
+                        use_container_width=True,
+                        key=f"save_res_{mid}",
+                    ):
+                        if update_match_result(
+                            mid, r_a, r_b,
+                            result_penalties=goes_to_pen,
+                            result_pen_a=rpen_a,
+                            result_pen_b=rpen_b,
+                        ):
+                            st.success(f"Resultado salvo: {r_a} × {r_b}. Pontos recalculados!")
+                            st.rerun()
+                        else:
+                            st.error("Erro ao salvar resultado.")
 
 # ── View Predictions ──────────────────────────────────────────────────────────
 with tab_view:

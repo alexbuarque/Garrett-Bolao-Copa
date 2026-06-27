@@ -46,21 +46,30 @@ def get_user_predictions(user_id: str) -> dict[int, dict]:
     return {row["match_id"]: row for row in (result.data or [])}
 
 
-def save_prediction(user_id: str, match_id: int, pred_a: int, pred_b: int) -> bool:
+def save_prediction(
+    user_id: str,
+    match_id: int,
+    pred_a: int,
+    pred_b: int,
+    pred_penalties: bool = False,
+    pred_pen_a: int | None = None,
+    pred_pen_b: int | None = None,
+) -> bool:
     client = get_admin_supabase()
     now = datetime.now(timezone.utc).isoformat()
+    row: dict = {
+        "user_id": user_id,
+        "match_id": match_id,
+        "pred_a": pred_a,
+        "pred_b": pred_b,
+        "pred_penalties": pred_penalties,
+        "pred_pen_a": pred_pen_a if pred_penalties else None,
+        "pred_pen_b": pred_pen_b if pred_penalties else None,
+        "points": 0,
+        "updated_at": now,
+    }
     try:
-        client.table("predictions").upsert(
-            {
-                "user_id": user_id,
-                "match_id": match_id,
-                "pred_a": pred_a,
-                "pred_b": pred_b,
-                "points": 0,
-                "updated_at": now,
-            },
-            on_conflict="user_id,match_id",
-        ).execute()
+        client.table("predictions").upsert(row, on_conflict="user_id,match_id").execute()
         return True
     except Exception:
         return False
@@ -107,13 +116,28 @@ def get_ranking() -> list[dict]:
 
 # ── Admin ─────────────────────────────────────────────────────────────────────
 
-def update_match_result(match_id: int, result_a: int, result_b: int) -> bool:
+def update_match_result(
+    match_id: int,
+    result_a: int,
+    result_b: int,
+    result_penalties: bool = False,
+    result_pen_a: int | None = None,
+    result_pen_b: int | None = None,
+) -> bool:
     client = get_admin_supabase()
     try:
-        client.table("matches").update(
-            {"result_a": result_a, "result_b": result_b, "finished": True}
-        ).eq("id", match_id).execute()
-        _recalculate_match_points(match_id, result_a, result_b)
+        client.table("matches").update({
+            "result_a": result_a,
+            "result_b": result_b,
+            "finished": True,
+            "result_penalties": result_penalties,
+            "result_pen_a": result_pen_a if result_penalties else None,
+            "result_pen_b": result_pen_b if result_penalties else None,
+        }).eq("id", match_id).execute()
+        _recalculate_match_points(
+            match_id, result_a, result_b,
+            result_penalties, result_pen_a, result_pen_b,
+        )
         get_ranking.clear()
         get_all_predictions_with_profiles.clear()
         return True
@@ -121,17 +145,32 @@ def update_match_result(match_id: int, result_a: int, result_b: int) -> bool:
         return False
 
 
-def _recalculate_match_points(match_id: int, result_a: int, result_b: int) -> None:
+def _recalculate_match_points(
+    match_id: int,
+    result_a: int,
+    result_b: int,
+    result_penalties: bool = False,
+    result_pen_a: int | None = None,
+    result_pen_b: int | None = None,
+) -> None:
     client = get_admin_supabase()
     preds = (
         client.table("predictions")
-        .select("id, pred_a, pred_b")
+        .select("id, pred_a, pred_b, pred_penalties, pred_pen_a, pred_pen_b")
         .eq("match_id", match_id)
         .execute()
         .data or []
     )
     for pred in preds:
-        pts = calculate_match_points(pred["pred_a"], pred["pred_b"], result_a, result_b)
+        pts = calculate_match_points(
+            pred["pred_a"], pred["pred_b"], result_a, result_b,
+            pred_penalties=bool(pred.get("pred_penalties")),
+            pred_pen_a=pred.get("pred_pen_a"),
+            pred_pen_b=pred.get("pred_pen_b"),
+            result_penalties=result_penalties,
+            result_pen_a=result_pen_a,
+            result_pen_b=result_pen_b,
+        )
         client.table("predictions").update({"points": pts}).eq("id", pred["id"]).execute()
 
 
