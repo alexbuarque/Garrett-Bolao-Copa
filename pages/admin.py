@@ -95,7 +95,7 @@ with tab_results:
     if not all_matches:
         st.warning("Nenhum jogo encontrado. Use a aba ⚙️ Inicializar primeiro.")
     else:
-        GROUPS = sorted({m["group_name"] for m in all_matches})
+        GROUPS = sorted({m["group_name"] for m in all_matches if m.get("stage") == "group"})
         group_sel = st.selectbox("Grupo", GROUPS, key="admin_group")
         group_matches = [m for m in all_matches if m["group_name"] == group_sel]
 
@@ -228,17 +228,17 @@ with tab_playoffs:
                     with rc1:
                         r_a = st.number_input(
                             f"Gols {match['team_a']}", min_value=0, max_value=30,
-                            value=int(match.get("result_a") or 0), key=f"ra_{mid}",
+                            value=int(match.get("result_a") or 0), key=f"pl_ra_{mid}",
                         )
                     with rc2:
                         r_b = st.number_input(
                             f"Gols {match['team_b']}", min_value=0, max_value=30,
-                            value=int(match.get("result_b") or 0), key=f"rb_{mid}",
+                            value=int(match.get("result_b") or 0), key=f"pl_rb_{mid}",
                         )
                     goes_to_pen = st.checkbox(
                         "🥅 Jogo foi para pênaltis?",
                         value=bool(match.get("result_penalties")),
-                        key=f"rpen_{mid}",
+                        key=f"pl_rpen_{mid}",
                     )
                     rpen_a = rpen_b = None
                     if goes_to_pen:
@@ -246,17 +246,17 @@ with tab_playoffs:
                         with rp1:
                             rpen_a = st.number_input(
                                 f"Pênaltis {match['team_a']}", min_value=0, max_value=20,
-                                value=int(match.get("result_pen_a") or 0), key=f"rpena_{mid}",
+                                value=int(match.get("result_pen_a") or 0), key=f"pl_rpena_{mid}",
                             )
                         with rp2:
                             rpen_b = st.number_input(
                                 f"Pênaltis {match['team_b']}", min_value=0, max_value=20,
-                                value=int(match.get("result_pen_b") or 0), key=f"rpenb_{mid}",
+                                value=int(match.get("result_pen_b") or 0), key=f"pl_rpenb_{mid}",
                             )
                     if st.button(
                         "💾 Salvar resultado e calcular pontos",
                         use_container_width=True,
-                        key=f"save_res_{mid}",
+                        key=f"pl_save_res_{mid}",
                     ):
                         if update_match_result(
                             mid, r_a, r_b,
